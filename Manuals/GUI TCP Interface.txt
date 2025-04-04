@@ -1,0 +1,136 @@
+TCP/IP GUI Control
+==================
+
+TCP connection to port 10000
+
+Commands and responses are CRLF terminated ASCII strings.
+Commands are case insensitive.
+All commands will receive a response.
+Responses to command are either OK or Error:<reason>.
+Responses to queries are returned in the same format as the command.
+
+Commands
+========
+
+Log:File:<filename>
+  Sets the log file name.
+
+Log:File:?
+  Returns the current log file name.
+
+Log:Desc:<description string>
+  Sets the log file description string.
+
+Log:Desc:?
+  Returns the current log file description string.
+
+Log:Open
+  Opens the current log file.  This will erase any data current in the file and start a new file.
+
+Log:Close
+  Closes and flushes the log file disk.
+
+Log:?
+  Returns the current status of the log file ("Log:Open" or "Log:Closed")
+
+Log:Enable:On
+  Enable logging to disk.  You must set the successful open the log file before this command.
+
+Log:Enable:Off
+  Disable logging to disk.  This does not close the log file, it just suspends data logging.
+
+Log:Enable:?
+  Returns the on/off status of logging ("Log:Enable:On" or "Log:Enable:Off")
+
+
+Mount:Pos:<azimuth> <elevation> <azimuth velocity> <elevation velocity>
+  Drives the mount to the specified azimuth and elevation position in degrees at the specified
+  maximum velocity in degress per second (example: "Mount:Pos:-10.234 170.122 10.000 8.000")
+  
+Mount:PosTrk:<azimuth> <elevation> <azimuth velocity> <elevation velocity>
+  Drives the mount at a given rate (position mode tracking) to the specified azimuth and elevation
+  position in degrees.  Some mounts also support a velocity in degress per second which can be
+  a rate limit or similar.  Some mounts require the velocities to be set to zero.
+  (example: "Mount:PosTrk:-10.234 170.122 0 0")
+
+Mount:Pos:?
+  Returns the current mount azimuth and elevation position in degrees and target range in meters (if valid)
+  (example: "Mount:Pos:-10.234 170.122" or "Mount:Pos:-10.234 170.122 100.50")
+
+Mount:Offsets:<azimuth offset> <elevation offset> 
+  Sets the mount azimuth and elevation position offsets in degrees.  Typically used to set
+  the azimuth offset for true/magnetic North correction.
+  (example: "Mount:Offsets:-5.623 0.0")
+
+
+AutoTrack:On
+  Enable auto-track.
+  
+AutoTrack:Off
+  Disable auto-track.
+  
+AutoTrack:?
+  Returns the current state of the auto-track function ("AutoTrack:On" or "AutoTrack:Off")
+
+
+AutoAcquire:On
+  Enable auto-acquire.
+  
+AutoAcquire:Off
+  Disable auto-acquire.
+  
+AutoAcquire:?
+  Returns the current state of the auto-acquire function ("AutoAcquire:On" or "AutoAcquire:Off")
+
+
+Range:<range>
+  Sets the current range to the target in meters (example: "Range:1205.54")
+
+Range:?
+  Returns the last measured range (example: "Range:1205.54" or "Range:Unknown")
+
+
+TargetGen:On
+  Enable target generator
+
+TargetGen:Off
+  Disable target generator
+
+TargetGen:<select> <type> <color> <position x> <position y> <size x> <size y>
+  Controls the operation of the target generator.  The parameters are defined as follows:
+  <select> can be Background, Target1 or Target2
+  <type> can be Off/Disabled, Rectangle or Diamond (NOTE: background must use Rectangle)
+  <color> is an integer grayscale value from 0 to 1023
+  <position x> is the pixel location of the center of the target
+  <position y> is the line location of the center of the target
+  <size x> is the size in pixels of the target
+  <size y> is the size in lines of the target
+
+
+GPS:?
+  Returns the current position with altitude, date and time of the attached IRIG/GPS unit.
+  The output is in the format "GPS:<sync status>:<latitude> <longitude> <altitude>:<date>:<time>"
+  where the parameters are defined as follows:
+  <sync status> can be N (not synced) or S (synced)
+  <latitude> is in degrees, minutes and seconds with milliseconds
+  <longitude> is in degrees, minutes and seconds with milliseconds
+  <altitude> is in meters above geoid
+  <date> is in the format year-month-day
+  <time> is in the format hour.minute.second.milliseconds UTC
+  (example: "GPS:S:N035 49'01.645" W117 35'34.812" 762.29m:2012-07-06:14.09.43.697")
+
+
+MisLevel:On <phi angle> <theta angle>
+  Enable mislevel correction to the mount angles and set the phi and theta
+  angles for the correction (if specified)
+  
+MisLevel:Off
+  Disable mislevel correction to the mount angles
+  
+MisLevel:?
+  Returns the current mislevel status along with the current phi and theta angles
+  (example: "MisLevel:On 0.567845 1.89776")
+
+
+Quit or Exit
+  Disconnects from the GUI

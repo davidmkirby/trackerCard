@@ -1,0 +1,45 @@
+Moog, Inc. / Electro-Optical Imaging
+Series 7000 and 8000 Video Trackers
+Software Development Kit (SDK)
+
+
+Model 7005 and 7015 VMEbus Tracker
+==================================
+- Useful C++ classes (targeted towards MS Visual C++)
+    * Tracker serial communications
+    * Tracker VME communications (GEFanuc/VMIC and Xycom)
+    * Tracker TCP/IP communications
+    * Brandywine GPS/IRIG VME support (GEFanuc/VMIC and Xycom)
+    * Helper classes for tracker messaging
+- Message structure header file (useful for both C and C++)
+- C and C++ example source code
+
+Model 7007 PCI and 7010 PCI Express Tracker
+===========================================
+- Useful C++ classes (targeted towards MS Visual C++)
+    * Tracker serial communications
+    * Tracker PCI and PCIe communications
+    * Tracker TCP/IP communications
+    * Brandywine GPS/IRIG PCI and PCIe bus support
+    * Helper classes for tracker messaging
+- Message structure header file (useful for both C and C++)
+- C and C++ example source code
+
+Model 7410 PCI Express Tracker
+==============================
+- Useful C++ classes (targeted towards MS Visual C++)
+    * Tracker serial communications
+    * Tracker PCIe communications
+    * Tracker TCP/IP communications
+    * Helper classes for tracker messaging
+- Message structure header file (useful for both C and C++)
+- C and C++ example source code
+
+Model 8100, 8200, 8210 and 8800 Standalone Tracker
+==================================================
+- Useful C++ classes (targeted towards MS Visual C++)
+    * Tracker serial communications
+    * Tracker TCP/IP communications
+    * Helper classes for tracker messaging
+- Message structure header file (useful for both C and C++)
+- C and C++ example source code

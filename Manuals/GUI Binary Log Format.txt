@@ -1,0 +1,110 @@
+GUI Binary Log File Format
+==========================
+10 May 2006
+
+The file is raw binary in Intel byte order.
+Each record is formatted as follows:
+
+unsigned long	HeaderID
+unsigned long	ByteCount
+SYSTEMTIME	SystemTime
+STATUS_MSG	StatusMessage
+double		Range
+unsigned short	DIO
+
+The following is a description of each parameter of the record.
+
+HeaderID is equal to 0x00C0FFEE
+
+ByteCount is the total number of bytes in the record excluding the
+HeaderID and the ByteCount itself.  This allows for future expansion
+to the end of the record while allowing older software to ignore
+the addition fields of data.
+
+SystemTime is the standard C SYSTEMTIME structure.
+	typedef struct _SYSTEMTIME {
+		WORD wYear; 
+		WORD wMonth; 
+		WORD wDayOfWeek; // NOT USED
+		WORD wDay; 
+		WORD wHour; 
+		WORD wMinute; 
+		WORD wSecond; 
+		WORD wMilliseconds; 
+	} SYSTEMTIME; 
+
+StatusMessage is the video tracker's STATUS_MSG structure as defined in
+the video tracker documentation and in the MSG_FMT.H file.
+	typedef struct
+	{
+		// Word 1
+		USHORT sync				:16;  // sync word
+
+		// Word 2
+		USHORT gate				:8;   // gate number
+		USHORT msg_type			:8;   // message type = 255
+
+		// Word 3
+		short  txerr			:16;  // raw X/pixel track error (no filters or scaling applied)
+									  //    range: +/- 1023.969  (divide by 32 to get value)
+
+		// Word 4
+		short  tyerr			:16;  // raw Y/line track error (no filters or scaling applied)
+									  //    range: +/- 1023.969  (divide by 32 to get value)
+
+		// Word 5
+		USHORT tgt_pol			:3;   // target polarity
+		USHORT trk_state		:3;   // track state
+		USHORT trk_acq			:1;   // track-acquire state (0=Acquire, 1=Track)
+		USHORT trk_mode			:3;   // track mode
+		USHORT auto_acquire		:1;   // auto-acquire enable
+		USHORT log_scan			:1;	  // log to scan file flag (1=log this message)
+		USHORT control_box		:1;	  // control box status (0=disabled, 1=enabled)
+		USHORT scan_active		:1;	  // is scan mode active (0=disabled, 1=active)
+		USHORT log				:1;	  // log to file flag (1=log this message)
+		USHORT cmd_ack			:1;   // command acknowledge bit (0=unsolicited, 1=response to a ping)
+
+		// Word 6
+		USHORT status			:16;  // track status 
+
+		// Word 7
+		USHORT txsize			:16;  // target size (X) in pixels
+
+		// Word 8
+		USHORT tysize			:16;  // target size (Y) in lines
+
+		// Word 9
+		USHORT tleft			:16;  // the left (X/pixel) position of the bounding rectangle of the target
+									  //   range: 0 to 1023 (top/left of image is 0,0)
+		// Word 10
+		USHORT ttop				:16;  // the top (Y/line) position of the bounding rectangle of the target
+									  //   range: 0 to 1023 (top/left of image is 0,0)
+		// Word 11
+		USHORT tcount			:16;  // the pixel count (mass size) of the target
+
+		// Word 12 & 13
+		short  azimuth_lsw		:16;  // azimuth of mount in degrees, least significant word (lsw)
+		short  azimuth_msw		:16;  // and most significant word (msw) (divide by 10000 to get value)
+									  //    range: +/- 360.0000  (divide by 10,000 to get value)
+
+		// Word 14 & 15
+		short  elevation_lsw	:16;  // elevation of mount in degrees, least significant word (lsw)
+		short  elevation_msw	:16;  // and most significant word (msw) (divide by 10000 to get value)
+									  //    range: +/- 360.0000  (divide by 10,000 to get value)
+
+		// Word 16
+		short  filtered_txerr	:16;  // filtered X/azimuth track error (with all filters and scaling applied)
+									  //    range: +/- 1023.969  (divide by 32 to get value)
+
+		// Word 17
+		short  filtered_tyerr	:16;  // filtered Y/elevation track error (with all filters and scaling applied)
+									  //    range: +/- 1023.969  (divide by 32 to get value)
+
+		// Word 18
+		short  checksum			:16;  // checksum 
+
+	} STATUS_MSG;
+
+Range contains the last measured laser rangefinder's reading in meters.
+
+DIO is the current value of the video tracker's 16-bit digital I/O port.

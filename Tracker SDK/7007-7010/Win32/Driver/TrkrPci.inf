@@ -1,0 +1,174 @@
+;===============================================================
+;
+; File    : TrkrPci.inf
+;
+; Abstract: Windows INF for Model 7007/7010/7410 Video Trackers
+;           with PLX 9054 PCI bridge chip or equivalent
+;
+; Revision: Based on PLX SDK v6.31
+;
+;       (c) Copyright 2014 Electro-Optical Imaging, Inc. 
+;
+;===============================================================
+
+
+
+[Version]
+Signature         = $Windows NT$
+Provider          = %EOImaging%
+Class             = Unknown
+ClassGuid         = {4d36e97e-e325-11ce-bfc1-08002be10318}
+DriverVer         = 06/01/2009, 6.3.1.0
+DriverPackageType = PlugAndPlay
+CatalogFile       = TrkrPci.cat
+
+
+[Manufacturer]
+%EOImaging% = EOImaging.Mfg, NTamd64
+
+
+;-----------------------------------------------------------
+; Device identification for 32-bit Windows
+;-----------------------------------------------------------
+[EOImaging.Mfg]
+"E-O Imaging Model 6007 or 6008 Video Tracker" = DDInstall_9054, PCI\VEN_10b5&DEV_6007
+"E-O Imaging Model 7007, 7008, 7010 or 7011 Video Tracker" = DDInstall_9054, PCI\VEN_10b5&DEV_7007
+"E-O Imaging Model 7010 or 7011 Video Tracker" = DDInstall_9054, PCI\VEN_10b5&DEV_7010
+"E-O Imaging Model 7410, 7411 or 7412 Video Tracker" = DDInstall_9054, PCI\VEN_10b5&DEV_7410
+"Brandywine PCI SyncClock32 univ" = DDInstall_9030, PCI\VEN_10b5&DEV_9030
+"Brandywine PCIe SyncClock32" = DDInstall_9056, PCI\VEN_10b5&DEV_9056
+
+
+;-----------------------------------------------------------
+; Device identification for 64-bit Windows x64
+;-----------------------------------------------------------
+[EOImaging.Mfg.NTamd64]
+"E-O Imaging Model 6007 or 6008 Video Tracker (64-bit)" = DDInstall_9054, PCI\VEN_10b5&DEV_6007
+"E-O Imaging Model 7007, 7008, 7010 or 7011 Video Tracker (64-bit)" = DDInstall_9054, PCI\VEN_10b5&DEV_7007
+"E-O Imaging Model 7010 or 7011 Video Tracker (64-bit)" = DDInstall_9054, PCI\VEN_10b5&DEV_7010
+"E-O Imaging Model 7410, 7411 or 7412 Video Tracker (64-bit)" = DDInstall_9054, PCI\VEN_10b5&DEV_7410
+"Brandywine PCI SyncClock32 univ (64-bit)" = DDInstall_9030, PCI\VEN_10b5&DEV_9030
+"Brandywine PCIe SyncClock32 (64-bit)" = DDInstall_9056, PCI\VEN_10b5&DEV_9056
+
+
+
+;-----------------------------------------------------------
+; CopyFiles section
+;
+; Flags: 0x00000004 = COPYFLG_NOVERSIONCHECK
+;-----------------------------------------------------------
+
+[CopyFiles_ApiDll]
+TrkrPciApi.dll,,,0x00000004
+
+[CopyFiles_9030]
+Plx9030.sys,,,0x00000004
+
+[CopyFiles_9054]
+Plx9054.sys,,,0x00000004
+
+[CopyFiles_9056]
+Plx9056.sys,,,0x00000004
+
+
+;-----------------------------------------------------------
+; Driver installation section
+;
+; NOTE:  To enable file copy for distribution, remove the
+;        comment symbol (;) from each "CopyFiles" line.
+;-----------------------------------------------------------
+
+[DDInstall_9030.NT]
+AddReg    = AddRegistry_NT_9030
+CopyFiles = CopyFiles_ApiDll, CopyFiles_9030
+
+[DDInstall_9054.NT]
+AddReg    = AddRegistry_NT_9054
+CopyFiles = CopyFiles_ApiDll, CopyFiles_9054
+
+[DDInstall_9056.NT]
+AddReg    = AddRegistry_NT_9056
+CopyFiles = CopyFiles_ApiDll, CopyFiles_9056
+
+
+;-----------------------------------------------------------
+; AddService section
+;-----------------------------------------------------------
+[DDInstall_9030.NT.Services]
+AddService = Plx9030, 0x00000002, Service_Inst_9030
+
+[DDInstall_9054.NT.Services]
+AddService = Plx9054, 0x00000002, Service_Inst_9054
+
+[DDInstall_9056.NT.Services]
+AddService = Plx9056, 0x00000002, Service_Inst_9056
+
+
+;-----------------------------------------------------------
+; AddRegistry section
+;-----------------------------------------------------------
+[AddRegistry_NT_9030]
+HKLM,System\CurrentControlSet\Services\Plx9030,PhysicalMemoryCacheable,0x00010003,0x0
+
+[AddRegistry_NT_9054]
+HKLM,System\CurrentControlSet\Services\Plx9054,CommonBufferSize,0x00010003,0x10000
+HKLM,System\CurrentControlSet\Services\Plx9054,PhysicalMemoryCacheable,0x00010003,0x0
+
+[AddRegistry_NT_9056]
+HKLM,System\CurrentControlSet\Services\Plx9056,CommonBufferSize,0x00010003,0x10000
+
+
+;-----------------------------------------------------------
+; Service installation section
+;-----------------------------------------------------------
+[Service_Inst_9030]
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %12%\Plx9030.sys
+
+[Service_Inst_9054]
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %12%\Plx9054.sys
+
+[Service_Inst_9056]
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %12%\Plx9056.sys
+
+
+;-----------------------------------------------------------
+; Source file information
+;-----------------------------------------------------------
+
+[SourceDisksNames]
+1 = %InstallDisk%
+
+[SourceDisksFiles]
+TrkrPciApi.dll = 1
+Plx9030.sys = 1,\i386
+Plx9054.sys = 1,\i386
+Plx9056.sys = 1,\i386
+
+[SourceDisksFiles.amd64]
+TrkrPciApi.dll = 1
+Plx9030.sys = 1,\amd64
+Plx9054.sys = 1,\amd64
+Plx9056.sys = 1,\amd64
+
+[DestinationDirs]
+CopyFiles_ApiDll = 16425       ;16425 = %WinDir%\System32 (supports WOW64)
+DefaultDestDir   = 12          ;12    = Drivers Directory
+
+
+
+;-----------------------------------------------------------
+; String information
+;-----------------------------------------------------------
+
+[Strings]
+InstallDisk = "E-O Imaging Installation Disk"
+EOImaging   = "Electro-Optical Imaging, Inc."
